@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -14,8 +15,11 @@ public class Player : MonoBehaviour
 
     Rigidbody2D playerCharacter;
     Animator playerAnimator;
-    CapsuleCollider2D playerBodyCollider;
+    public CapsuleCollider2D playerBodyCollider;
     BoxCollider2D playerFeetCollider;
+
+    [SerializeField] GameObject voidCollider;
+
 
 
     void Start()
@@ -26,6 +30,8 @@ public class Player : MonoBehaviour
         playerFeetCollider = GetComponent<BoxCollider2D>();
 
         gravityScaleAtStart = playerCharacter.gravityScale;
+
+        voidCollider.GetComponent<BoxCollider2D>();
     }
 
 
@@ -44,8 +50,6 @@ public class Player : MonoBehaviour
         float hMovement = Input.GetAxis("Horizontal");
         Vector2 runVelocity = new Vector2(hMovement * runSpeed, playerCharacter.velocity.y);
         playerCharacter.velocity = runVelocity;
-
-        print(runVelocity);
 
         bool hSpeed = Mathf.Abs(playerCharacter.velocity.x) > Mathf.Epsilon;
 
@@ -107,6 +111,19 @@ public class Player : MonoBehaviour
 
     private void Grounded()
     {
+
+    }
+
+    private void respawnControls()
+    {
+        if (playerBodyCollider.IsTouchingLayers(LayerMask.GetMask("Death")))
+        {
+            Scene sceney = SceneManager.GetActiveScene();
+            string currentScene = sceney.name;
+            
+            SceneManager.LoadScene(currentScene);
+
+        }
 
     }
 }
